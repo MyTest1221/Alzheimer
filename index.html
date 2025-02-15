@@ -122,22 +122,22 @@
             score += value;
             
             if (currentQuestion < questions.length) {
-                if(currentQuestion<4){
+                if(currentQuestion<3){
                     document.getElementById("type").innerHTML="القسم الأول: اسئلة الذاكرة";
                 }
-                else if(currentQuestion>=4 && currentQuestion<7){
+                else if(currentQuestion>=3 && currentQuestion<6){
                     document.getElementById("type").innerHTML="القسم الثاني: الإدراك والانتباه";
                 }
-                else if(currentQuestion>=7 && currentQuestion<10){
+                else if(currentQuestion>=6 && currentQuestion<9){
                     document.getElementById("type").innerHTML="القسم الثالث: الوظائف اليومية";
                 }
-                else if(currentQuestion>=10 && currentQuestion<13){
+                else if(currentQuestion>=9 && currentQuestion<12){
                     document.getElementById("type").innerHTML="القسم الرابع: السلوك والعواطف";
                 }
-                else if(currentQuestion>=13 && currentQuestion<15){
+                else if(currentQuestion>=12 && currentQuestion<14){
                     document.getElementById("type").innerHTML="القسم الخامس: التوجه الزماني والمكاني";
                 }
-                else if(currentQuestion>=15 && currentQuestion<17){
+                else if(currentQuestion>=14 && currentQuestion<16){
                     document.getElementById("type").innerHTML="القسم السادس: التاريخ العائلي";
                 }
                 document.getElementById("question").innerText = questions[currentQuestion].q;
