@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الكشف المبكر عن الزهايمر</title>
+    <style>
+        body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: #f4f4f4;
+    height: 100vh; /* يجعل الصفحة تمتد لكامل الشاشة */
+    display: flex;
+    justify-content: center; /* يوسّط العنصر أفقيًا */
+    align-items: center; /* يوسّط العنصر عموديًا */
+    margin: 0; /* يزيل الهوامش الافتراضية */
+}
+
+.containers {
+    display: flex;
+    justify-content: center; /* يوسّط العنصر أفقيًا */
+    align-items: center; /* يوسّط العنصر عموديًا */
+    flex-direction: column;
+    height: 100%; /* يضمن أن العنصر يأخذ كامل ارتفاع الصفحة */
+}
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            
+            max-width: 450px;
+            
+            text-align: center;
+            
+        }
+        
+        
+        .progress-container {
+            width: 100%;
+            background: #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 10px;
+            background: #9f38ff;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background: #9f38ff;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Tajawal', sans-serif;
+        }
+        button:hover {
+            background: #9033e7;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="containers">
+        
+        <div class="container">
+            <h4 id="type"></h4>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+            <h3 id="question">السؤال الأول</h3>
+            <div id="answers"></div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        const questions = [
+  // 1. الأسئلة المتعلقة بالذاكرة:
+  { q: "هل تجد صعوبة متزايدة في تذكر الأحداث الأخيرة؟", a: ["نعم، أصبحت أنسى الأحداث القريبة مثل ما تناولته في الإفطار", "لا، لا أجد صعوبة في تذكر الأحداث الأخيرة"] },
+  { q: "هل تنسى مواعيدك أو أين وضعت أغراضك الشخصية؟", a: ["أحيانًا أنسى أين وضعت المفاتيح أو الهاتف، لكني أجدها لاحقًا", "لا، أتذكر دائمًا مواعيدي وأين وضعت أغراضي الشخصية"] },
+  { q: "هل تكرر الأسئلة نفسها في وقت قصير؟", a: ["نعم، أكرر نفس السؤال أحيانًا دون أن أدرك ذلك", "لا، لا أكرر الأسئلة نفسها في وقت قصير"] },
+
+  // 2. الأسئلة المتعلقة بالإدراك والانتباه:
+  { q: "هل تواجه صعوبة في العثور على الكلمات أثناء التحدث؟", a: ["نعم، أجد صعوبة في تذكر بعض الكلمات أثناء الحديث", "لا، لا أواجه أي صعوبة في العثور على الكلمات أثناء التحدث"] },
+  { q: "هل تجد صعوبة في متابعة محادثة أو قصة؟", a: ["أحيانًا أفقد تركيزي أثناء متابعة محادثة طويلة", "لا، أتابع المحادثات والقصص بسهولة دون فقدان التركيز"] },
+  { q: "هل تواجه مشكلة في التعرف على الأشخاص أو الأماكن المألوفة؟", a: ["نعم، بدأت أواجه صعوبة في تذكر بعض الوجوه، حتى لو كانت مألوفة", "لا، أتعرف بسهولة على الأشخاص والأماكن المألوفة"] },
+
+  // 3. الأسئلة المتعلقة بالوظائف اليومية:
+  { q: "هل تجد صعوبة في أداء المهام اليومية، مثل دفع الفواتير أو الطهي أو استخدام الهاتف؟", a: ["بدأت أجد صعوبة في إدارة حساباتي المالية وأحيانًا أنسى دفع الفواتير", "لا، لا أجد أي صعوبة في أداء مهامي اليومية"] },
+  { q: "هل تحتاج إلى مساعدة أكثر من المعتاد في تنظيم يومك؟", a: ["أحتاج إلى مساعدة من أفراد العائلة لتنظيم يومي", "لا، أستطيع تنظيم يومي دون أي مساعدة إضافية"] },
+  { q: "هل تواجه مشاكل في استخدام الأدوات أو الأجهزة التي كنت تعرف كيف تستخدمها؟", a: ["نعم، أحيانًا لا أتمكن من تشغيل الميكروويف رغم أنني كنت أعرف كيفية استخدامه", "لا، أستخدم الأدوات والأجهزة دون أي مشاكل"] },
+
+  // 4. الأسئلة المتعلقة بالسلوك والعواطف:
+  { q: "هل لاحظت تغيرات في مزاجك، مثل القلق أو الاكتئاب أو التهيج؟", a: ["أشعر أحيانًا بالارتباك والتوتر بدون سبب واضح", "لا، لم ألاحظ أي تغيرات في مزاجي"] },
+  { q: "هل تجد نفسك مرتبكًا أو مشوشًا في أماكن غير مألوفة؟", a: ["نعم، أصبحت سريع الغضب أو أشعر بالحزن أكثر من المعتاد", "لا، لا أشعر بالارتباك أو التشوش في الأماكن غير المألوفة"] },
+  { q: "هل لاحظت تغيرات في شخصيتك أو فقدان الاهتمام بالأنشطة التي كنت تستمتع بها؟", a: ["فقدت الاهتمام ببعض الهوايات التي كنت أستمتع بها", "لا، لا يوجد أي تغيير في شخصيتي أو اهتمامي بالأنشطة التي أحبها"] },
+
+  // 5. الأسئلة المتعلقة بالتوجه الزماني والمكاني:
+  { q: "هل تنسى في أي يوم نحن أو أي سنة؟", a: ["أحيانًا أنسى اليوم أو الشهر، لكنني أتذكره لاحقًا", "لا، أتذكر دائمًا اليوم والسنة دون أي مشكلة"] },
+  { q: "هل تجد صعوبة في تذكر أين أنت أو كيف وصلت إلى مكان معين؟", a: ["في بعض الأحيان، أنسى كيف وصلت إلى مكان معين", "لا، أتذكر دائمًا أين أنا وكيف وصلت إلى أي مكان"] },
+
+  // 6. الأسئلة المتعلقة بالتاريخ العائلي:
+  { q: "هل يوجد في العائلة أشخاص يعانون من الخرف أو مرض الزهايمر؟", a: ["نعم، كان أحد أفراد العائلة مصابًا بمرض الزهايمر", "لا، لا يوجد في العائلة أي شخص يعاني من الخرف أو الزهايمر"] },
+  { q: "هل لديك تاريخ مرضي من إصابات الرأس أو الأمراض العصبية؟", a: ["نعم، لدي تاريخ مرضي من إصابات الرأس أو الأمراض العصبية", "لا، ليس لدي إصابات سابقة في الرأس أو أمراض عصبية"] }
+];
+        
+        let currentQuestion = 0;
+        let score = 0;
+
+        function nextQuestion(value) {
+            score += value;
+            
+            if (currentQuestion < questions.length) {
+                if(currentQuestion<4){
+                    document.getElementById("type").innerHTML="القسم الأول: اسئلة الذاكرة";
+                }
+                else if(currentQuestion>=4 && currentQuestion<7){
+                    document.getElementById("type").innerHTML="القسم الثاني: الإدراك والانتباه";
+                }
+                else if(currentQuestion>=7 && currentQuestion<10){
+                    document.getElementById("type").innerHTML="القسم الثالث: الوظائف اليومية";
+                }
+                else if(currentQuestion>=10 && currentQuestion<13){
+                    document.getElementById("type").innerHTML="القسم الرابع: السلوك والعواطف";
+                }
+                else if(currentQuestion>=13 && currentQuestion<15){
+                    document.getElementById("type").innerHTML="القسم الخامس: التوجه الزماني والمكاني";
+                }
+                else if(currentQuestion>=15 && currentQuestion<17){
+                    document.getElementById("type").innerHTML="القسم السادس: التاريخ العائلي";
+                }
+                document.getElementById("question").innerText = questions[currentQuestion].q;
+                document.getElementById("answers").innerHTML = `
+                    <button onclick="nextQuestion(1)">${questions[currentQuestion].a[0]}</button>
+                    <button onclick="nextQuestion(0)">${questions[currentQuestion].a[1]}</button>
+                `;
+                document.getElementById("progress").style.width = `${(currentQuestion / questions.length) * 100}%`;
+            } else {
+                showResult();
+            }
+            currentQuestion++;
+        }
+        
+        function showResult() {
+            let resultMessage = "";
+            if (score >= 10) {
+                resultMessage = "قد يكون لديك بعض الأعراض المبكرة للزهايمر، يجب استشارة طبيب";
+            } else {
+                resultMessage = "شكرا على اتمامك للاختبار، لا يوجد أي مؤشرات تدعو للقلق";
+            }
+            document.querySelector(".container").innerHTML = `<h2>النتيجة</h2><h2>${score}/16<br/></h2><p>${resultMessage}</p>`;
+        }
+        
+        document.addEventListener("DOMContentLoaded", () => nextQuestion(0));
+    </script>
+</body>
+</html>
+
